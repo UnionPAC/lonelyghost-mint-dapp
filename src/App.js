@@ -193,11 +193,15 @@ function App() {
       });
       console.log("Mining ...");
       await tx.wait();
-      setLoading(false);
       console.log("Mined", tx.hash);
 
       getAmountMinted();
-      toggleModal();
+
+      setTimeout(() => {
+        toggleModal();
+      }, 3000);
+
+      setLoading(false);
     }
   };
 
@@ -248,13 +252,13 @@ function App() {
             <a
               target="_blank"
               rel="noreferrer"
-              href={`https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/${amountMinted}`}
+              href={`https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/${newMintTokenId}`}
             >
               <button className="btn normal-case m-10">
                 View NFT on OpenSea
               </button>
             </a>
-            <p className="text-xl">See ya around 👋</p>
+            <p className="text-xl pt-4">See ya around 👋</p>
           </div>
         </div>
       </Fragment>
@@ -311,7 +315,7 @@ function App() {
         </div>
         {currentAccount ? renderUserConnected() : renderUserNotConnected()}
         <a
-          href="https://testnets.opensea.io/collection/lonelyghosts-v4"
+          href="https://opensea.io/collection/lonelyghosts-v2"
           target="_blank"
           rel="noreferrer"
         >
