@@ -116,7 +116,7 @@
 
 /* Gradient */
 .live-gradient {
-  background: linear-gradient(300deg, #ff7777, #ffb973, #ffe57b, #61e5bd, #5595e4, #a36ae1, #f7b3f0);
+  background: linear-gradient(300deg,#ffe573, #92f28d, #75eaec, #77b4ff, #bd8fed);
   background-size: 400% 400%;
 
   -webkit-animation: AnimationName 30s ease infinite;
