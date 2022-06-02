@@ -8,7 +8,8 @@ import "./App.css";
 
 function App() {
   // Constants
-  const CONTRACT_ADDRESS = "0xdE5040ED1299DaEBCc7813a9E2dCfe4F8C38636A";
+  const CONTRACT_ADDRESS = "0x276Eb5caFC9CDB664A9a9D0032EAdd75059fE20d";
+
   const MAX_SUPPLY = 1000;
   const TWITTER_HANDLE = "unionpac_";
   const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
@@ -23,6 +24,8 @@ function App() {
   const [amountMinted, setAmountMinted] = useState("");
   const [loading, setLoading] = useState(false);
   const [mintPaused, setMintPaused] = useState();
+
+  const newMintTokenId = +amountMinted + 1;
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -72,7 +75,7 @@ function App() {
       try {
         await ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0x13881" }],
+          params: [{ chainId: "0x89" }],
         });
       } catch (error) {
         // if user doesn't have the Polygon tesnet added to their networks - we'll add it!
@@ -82,15 +85,15 @@ function App() {
               method: "wallet_addEthereumChain",
               params: [
                 {
-                  chainId: "0x13881",
-                  chainName: "Polygon Mumbai Testnet",
-                  rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
+                  chainId: "0x89",
+                  chainName: "Polygon Mainnet",
+                  rpcUrls: ["https://rpc-mainnet.matic.network"],
                   nativeCurrency: {
-                    name: "Mumbai Matic",
+                    name: "Polygon Matic",
                     symbol: "MATIC",
                     decimals: 18,
                   },
-                  blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+                  blockExplorerUrls: ["https://polygonscan.com/"],
                 },
               ],
             });
@@ -200,12 +203,10 @@ function App() {
 
   // Render Methods
   const renderUserConnected = () => {
-    if (network !== "Polygon Mumbai Testnet") {
+    if (network !== "Polygon Mainnet") {
       return (
         <div className="text-center">
-          <h3 className="italic">
-            Please switch to the Polygon Mumbai Testnet!
-          </h3>
+          <h3 className="italic">Please switch to the Polygon Mainnet!</h3>
           <button onClick={switchNetwork} className="btn m-5">
             Switch Network
           </button>
@@ -240,11 +241,14 @@ function App() {
               supporting this project and its creator!
             </p>
             <br></br>
-            <p className="italic text-xsm">Sometimes OpenSea is a bit slow, so your NFT may take a few minutes to load</p>
+            <p className="italic text-xsm">
+              Sometimes OpenSea is a bit slow, so your NFT may take a few
+              minutes to load
+            </p>
             <a
               target="_blank"
               rel="noreferrer"
-              href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${amountMinted}`}
+              href={`https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/${amountMinted}`}
             >
               <button className="btn normal-case m-10">
                 View NFT on OpenSea
