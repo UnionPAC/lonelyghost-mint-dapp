@@ -22,6 +22,7 @@ function App() {
   const [price, setPrice] = useState(null);
   const [amountMinted, setAmountMinted] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mintPaused, setMintPaused] = useState();
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -146,6 +147,27 @@ function App() {
     }
   };
 
+  const getMintState = async () => {
+    const { ethereum } = window;
+    if (ethereum) {
+      try {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          LonelyGhosts.abi,
+          signer
+        );
+
+        let tx = await contract.paused();
+        setMintPaused(tx);
+        console.log(mintPaused);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   const toggleModal = () => {
     mintPopup.classList.toggle("show-popup");
   };
@@ -171,7 +193,6 @@ function App() {
       setLoading(false);
       console.log("Mined", tx.hash);
 
-  
       getAmountMinted();
       toggleModal();
     }
@@ -193,27 +214,43 @@ function App() {
     }
     return (
       <Fragment>
-        <button onClick={mintGhost} className="btn">
-          Mint
-        </button>
+        {mintPaused === true ? (
+          <Fragment>
+            <h3 className="p-4 italic">
+              The contract is currently paused for minting
+            </h3>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <button onClick={mintGhost} className="btn">
+              Mint
+            </button>
+          </Fragment>
+        )}
+
         <div className="mint-popup">
           <div className="mint-popup-content">
             <span onClick={toggleModal} className="close-button">
               <i className="fa-solid fa-x"></i>
             </span>
-            <h1 className="text-3xl p-3">Congrats!</h1>
-            <p>
-              Congrats on your new Lonely Ghost NFT, welcome to the Fam! Thanks
-              for supporting this project and it's creators
+            <h1 className="text-2xl font-bold p-3">Congrats! 🎉</h1>
+            <p className="text-md">
+              Congratulations on your new Lonely Ghost NFT, welcome to the Fam
+              ... we're happy to have you on board! Big thanks to you for
+              supporting this project and its creator!
             </p>
+            <br></br>
+            <p className="italic text-xsm">Sometimes OpenSea is a bit slow, so your NFT may take a few minutes to load</p>
             <a
               target="_blank"
               rel="noreferrer"
               href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${amountMinted}`}
             >
-              <button className="btn normal-case m-10">View NFT on OpenSea</button>
+              <button className="btn normal-case m-10">
+                View NFT on OpenSea
+              </button>
             </a>
-            <p>See ya around! 👋</p>
+            <p className="text-xl">See ya around 👋</p>
           </div>
         </div>
       </Fragment>
@@ -233,17 +270,20 @@ function App() {
     checkIfWalletIsConnected();
     getPrice();
     getAmountMinted();
+    getMintState();
     // eslint-disable-next-line
   }, []);
 
   return (
-    <div className="App">
+    <div className="App live-gradient">
       <div className="main-card">
-        <h1 className="p-10 text-5xl font-bold title">Lonely Ghosts</h1>
-        <h2>
+        <h1 className="pt-6 pb-10 px-10 text-5xl font-bold title">
+          Lonely Ghosts
+        </h1>
+        <h2 className="text-2xl py-5 numbers">
           {amountMinted} / {MAX_SUPPLY}
         </h2>
-        <h4 className="p-5">Mint Price: {price} MATIC</h4>
+        <h4 className="p-3 text-lg">Mint Price: {price} MATIC</h4>
         <div
           style={{
             minHeight: "300px",
@@ -258,16 +298,20 @@ function App() {
             <Fragment>
               <img
                 src={hidden}
-                style={{ height: "300px" }}
+                style={{ height: "250px" }}
                 alt="Hidden Lonely Ghost"
-                className="m-5 rounded-lg"
+                className="m-5 rounded-md"
               />
             </Fragment>
           )}
         </div>
         {currentAccount ? renderUserConnected() : renderUserNotConnected()}
-        <a href="https://testnets.opensea.io/collection/lonelyghosts-v4" target="_blank" rel="noreferrer">
-          <button className="btn ">View on OpenSea</button>
+        <a
+          href="https://testnets.opensea.io/collection/lonelyghosts-v4"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <button className="btn">View on OpenSea</button>
         </a>
         <p className=""> </p>
         <a
